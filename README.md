@@ -54,29 +54,4 @@ The CNN used in this project consists of:
 This project demonstrates how deep learning can be integrated into a simple web application for real-time digit recognition.
 
 
-
-
-
-
-
-
 ![projectx2](https://github.com/user-attachments/assets/7cb50ab6-ce70-4c57-ac2a-1acbddc3eb65)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
