@@ -1,7 +1,5 @@
 # Handwritten Digit Recognition Web Application
 
-![projectx2](https://github.com/user-attachments/assets/82cd7b45-d1df-4a4f-a2b2-53c4a9946d33)
-
 ## Project Structure
 ```
 project_folder/
