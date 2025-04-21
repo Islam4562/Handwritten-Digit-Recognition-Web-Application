@@ -55,3 +55,7 @@ The CNN used in this project consists of:
 - Optimize the frontend for better user experience.
 
 This project demonstrates how deep learning can be integrated into a simple web application for real-time digit recognition.
+
+
+![27122204d43e88725018ff4ebec3e260](https://github.com/user-attachments/assets/ad5378e8-9b1d-457a-bdfb-83e22871dd4f)
+
