@@ -4,7 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digit Recognition</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            margin: 0;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 15px;
+            font-size: 2em;
+        }
+        canvas {
+            border: 4px solid white;
+            background-color: black;
+            cursor: crosshair;
+            touch-action: none;
+            border-radius: 10px;
+        }
+        .buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 15px;
+        }
+        button {
+            padding: 12px 18px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.3s;
+            color: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        #predict {
+            background: #28a745;
+        }
+        #clear {
+            background: #dc3545;
+        }
+        #result {
+            font-size: 20px;
+            margin-top: 15px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
     <h1>Draw a Digit</h1>
@@ -14,7 +72,84 @@
         <button id="clear">Clear</button>
     </div>
     <p id="result"></p>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            const predictBtn = document.getElementById("predict");
+            const clearBtn = document.getElementById("clear");
+            const resultText = document.getElementById("result");
+            
+            let drawing = false;
 
-    <script src="script.js"></script>
+            function initializeCanvas() {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            function getMousePos(event) {
+                const rect = canvas.getBoundingClientRect();
+                return {
+                    x: event.clientX - rect.left,
+                    y: event.clientY - rect.top
+                };
+            }
+            
+            function startDrawing(event) {
+                drawing = true;
+                draw(event);
+            }
+
+            function stopDrawing() {
+                drawing = false;
+                ctx.beginPath();
+            }
+            
+            function draw(event) {
+                if (!drawing) return;
+                const { x, y } = getMousePos(event);
+                ctx.lineWidth = 15;
+                ctx.lineCap = "round";
+                ctx.strokeStyle = "white";
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            }
+
+            function clearCanvas() {
+                initializeCanvas();
+                resultText.textContent = "";
+            }
+
+            async function sendImage() {
+                const imageData = canvas.toDataURL("image/png").split(",")[1];
+                const formData = new FormData();
+                formData.append("image", new Blob([Uint8Array.from(atob(imageData), c => c.charCodeAt(0))], {type: 'image/png'}));
+                
+                try {
+                    const response = await fetch("/predict", { method: "POST", body: formData });
+                    const result = await response.json();
+                    resultText.textContent = "Predicted Digit: " + result.digit;
+                } catch (error) {
+                    resultText.textContent = "Error: Unable to predict";
+                }
+            }
+
+            canvas.addEventListener("mousedown", startDrawing);
+            canvas.addEventListener("mouseup", stopDrawing);
+            canvas.addEventListener("mousemove", draw);
+            canvas.addEventListener("touchstart", (event) => startDrawing(event.touches[0]));
+            canvas.addEventListener("touchend", stopDrawing);
+            canvas.addEventListener("touchmove", (event) => draw(event.touches[0]));
+
+            clearBtn.addEventListener("click", clearCanvas);
+            predictBtn.addEventListener("click", sendImage);
+            
+            initializeCanvas();
+        });
+    </script>
 </body>
 </html>
+
