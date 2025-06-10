@@ -1,3 +1,4 @@
+# app.py
 from flask import Flask, request, jsonify, render_template
 import torch
 import torch.nn as nn
@@ -5,9 +6,8 @@ import torch.nn.functional as F
 import numpy as np
 from PIL import Image
 import io
-import os
 
-app = Flask(__name__, static_folder="static", template_folder="templates")
+app = Flask(__name__)
 
 # Определяем архитектуру модели (должна совпадать с train.py)
 class CNN(nn.Module):
@@ -54,3 +54,4 @@ def predict():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
